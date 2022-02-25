@@ -1,0 +1,71 @@
+package:
+  # Short name to avoid filename length issues on Windows.
+  name: pytorch_experimentation
+  version: 0.0.1
+
+source:
+  path: ../../
+
+build:
+  number: 0
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - {{ compiler('rust') }}
+    - python
+    - pybind11
+    - cmake
+    - ninja
+    - pkg-config
+    - setuptools-rust
+
+outputs:
+  - name: libprojcxx
+    build:
+      activate_in_script: True
+    script: install-libprojcxx.sh   # [unix]
+    requirements:
+      build:
+        - {{ compiler('c') }}
+        - {{ compiler('cxx') }}
+        - cmake
+        - ninja
+        - pybind11
+        - python
+
+  - name: pyproj
+    script: install-pyproj.sh   # [unix]
+    build:
+      activate_in_script: True
+    requirements:
+      build:
+        - {{ compiler('c') }}
+        - {{ compiler('cxx') }}
+        - {{ compiler('rust') }}
+      host:
+        - python
+        - pybind11
+        - cmake
+        - ninja
+        - pkg-config
+        - setuptools-rust
+      run:
+        - python
+    test:
+      source_files: src/python/*
+      requires:
+        - nox
+      commands:
+        - nox -s tests
+
+about:
+  home: https://extropic.net/
+  license: Propriatary
+  license_file: LICENSE.txt
+  summary: Template python project with c++ and rust bindings.
+
+extra:
+  recipe-maintainers:
+    - ascislowicz

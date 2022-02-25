@@ -1,0 +1,105 @@
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.1.0
+  hooks:
+  - id: check-added-large-files
+  - id: check-case-conflict
+  - id: check-merge-conflict
+  - id: check-symlinks
+#  - id: check-yaml
+  - id: debug-statements
+  - id: end-of-file-fixer
+  - id: mixed-line-ending
+  - id: requirements-txt-fixer
+    files: requirements.*\.txt$
+    pass_filenames: true
+  - id: trailing-whitespace
+
+- repo: https://github.com/ambv/black
+  rev: 22.1.0
+  hooks:
+    - id: black
+      language_version: python3.8
+      args: ['--config=pyproject.toml']
+
+- repo: https://github.com/pre-commit/mirrors-clang-format
+  rev: v13.0.0
+  hooks:
+   - id: clang-format
+     args: ['-i']
+
+- repo: https://github.com/doublify/pre-commit-rust
+  rev: v1.0
+  hooks:
+    - id: fmt
+      args: ['--manifest-path', 'src/rust/Cargo.toml']
+      pass_filenames: false
+
+- repo: https://github.com/doublify/pre-commit-rust
+  rev: v1.0
+  hooks:
+    - id: cargo-check
+      args: ['--manifest-path', 'src/rust/Cargo.toml']
+
+- repo: https://github.com/mgedmin/check-manifest
+  rev: "0.47"
+  hooks:
+  - id: check-manifest
+    args: ['--ignore', 'noxfile.py,src/python/pytorch_experimentation/tests/**,*.so']
+
+- repo: local
+  hooks:
+  - id: pipcheck
+    name: pipcheck - validate requirements
+    language: system
+    entry: bash -c 'pip check'
+
+# XXXADS issue with setuptools-rust dependency. I think its a conflict with
+# how databricks tracks the python env combined with how nox builds its
+# venv.
+
+#- repo: local
+#  hooks:
+#  - id: setup-py-check
+#    name: setup.py check -m -s
+#    language: system
+#    entry: bash -c 'python setup.py check -m -s'
+
+- repo: https://github.com/AleksaC/hadolint-py
+  rev: v2.8.0
+  hooks:
+  - id: hadolint
+    args: [--ignore, DL3003, --ignore, DL3008, --ignore, DL3015, --ignore, DL4006]
+
+- repo: https://github.com/pycqa/flake8
+  rev: 4.0.1
+  hooks:
+  - id: flake8
+    args: ['src/python']
+
+- repo: https://github.com/pre-commit/mirrors-pylint
+  rev: 'v3.0.0a4'
+  hooks:
+  - id: pylint
+    args: ['--ignore-imports=yes']
+
+- repo: https://github.com/pre-commit/mirrors-mypy
+  rev: v0.931
+  hooks:
+    - id: mypy
+      exclude: (?x)^(.*test_cxxmod.py|.*test_rust_proj.py|noxfile.py|setup.py)$
+      args: [--strict]
+
+- repo: local
+  hooks:
+  - id: cppcheck
+    name: cppcheck - c++ linter
+    language: system
+    entry: bash -c 'cppcheck --enable=warning,performance,portability,information,missingInclude -I/databricks/python3/lib/python3.8/site-packages/pybind11/include/ --suppress=preprocessorErrorDirective:/databricks/python3/lib/python3.8/site-packages/pybind11/include/pybind11/detail/common.h --std=c++20 -UVERSION_INFO --check-config ./src/cxx'
+
+- repo: local
+  hooks:
+  - id: clippy
+    name: cargo clippy - rust linter
+    language: system
+    entry: bash -c 'cd src/rust && cargo clippy'

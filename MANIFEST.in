@@ -1,0 +1,22 @@
+include pyproject.toml
+include *.md
+include LICENSE.txt
+
+include setup.py
+include makefile
+include CMakeLists.txt
+include Dockerfile
+include noxfile.py
+include .clang-format
+include .flake8
+include .pre-commit-config.yaml
+include requirements.txt
+include requirements.test.txt
+
+recursive-include packaging *
+recursive-include src/rust *
+recursive-include src/cxx *
+recursive-include src/python *
+
+exclude src/rust/Cargo.lock
+recursive-exclude src/rust/target *

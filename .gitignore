@@ -1,0 +1,15 @@
+/.devcontainer
+/dist
+/pytorch_experimentation
+rust_proj
+/src/rust/target
+/src/rust/Cargo.lock
+/build*
+/cmake-build*
+/.idea
+/.tox
+__pycache__
+.benchmarks
+*.egg-info
+*.so
+.pytest_cache
