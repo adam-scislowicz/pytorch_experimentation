@@ -1,7 +1,10 @@
+--find-links https://download.pytorch.org/whl/cpu/torch_stable.html
+
 black
 check-manifest
 cookiecutter
 flake8
+jupyterlab
 mypy
 nox
 pre-commit
@@ -11,3 +14,6 @@ pytest
 pyyaml
 setuptools
 setuptools-rust
+torch==1.10.2+cpu
+torchvision==0.11.3+cpu
+torchaudio==0.10.2+cpu
