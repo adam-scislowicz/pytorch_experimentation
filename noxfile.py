@@ -14,6 +14,7 @@ def lint(session: nox.Session) -> None:
     """
     session.install("-r", "requirements.test.txt")
     session.install("-e", ".")
+    session.run("make", "jupytext")
     session.run("pre-commit", "run", "--all-files", *session.posargs)
 
 

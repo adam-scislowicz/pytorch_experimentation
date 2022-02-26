@@ -6,5 +6,8 @@ docker-image: Dockerfile
 docker-interactive:
 	docker run -v $(PWD):/home/$(USER)/pytorch_experimentation -it -w /home/$(USER)/pytorch_experimentation pytorch_experimentation:latest
 
+jupytext: src/notebooks/*.ipynb
+	jupytext --set-formats ipynb,py --sync $^
+
 clean:
 	@rm -rf build* cmake-build* src/rust/target src/python/pytorch_experimentation.egg-info

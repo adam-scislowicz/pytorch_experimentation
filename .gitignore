@@ -12,4 +12,5 @@ __pycache__
 .benchmarks
 *.egg-info
 *.so
+*.ipynb
 .pytest_cache

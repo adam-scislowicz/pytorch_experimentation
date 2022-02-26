@@ -21,18 +21,20 @@ RUN apt-get clean \
     libpython3.8-dev \
     libspdlog-dev \
     ninja-build \
+    nodejs \
     packaging-dev \
     python3.8-venv \
     software-properties-common \
     tmux \
     && apt-get purge -y cmake \
     && mkdir /databricks/python3/include; ln -s /usr/include/python3.8 /databricks/python3/include \
+    && wget -qO - https://deb.nodesource.com/setup_17.x | bash - \
     && wget -qO - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | apt-key add - &> /dev/null \
     && yes '' | apt-add-repository -y 'deb https://apt.kitware.com/ubuntu/ bionic main' \
     && yes '' | add-apt-repository -y ppa:ubuntu-toolchain-r/test \
     && apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    clang-format cmake gcc-11 g++-11 gdb \
+    clang-format cmake gcc-11 g++-11 gdb nodejs \
     && update-alternatives --remove-all cpp \
     && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 110 --slave /usr/bin/g++ g++ /usr/bin/g++-11 --slave /usr/bin/gcov gcov /usr/bin/gcov-11 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-11 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-11  --slave /usr/bin/cpp cpp /usr/bin/cpp-11 \
     && /databricks/python3/bin/pip3 install -r requirements.txt \
@@ -45,7 +47,9 @@ RUN apt-get clean \
     && ninja install \
     && usermod -l $USER ubuntu \
     && usermod -u $UID $USER \
-    && usermod -g $GID $USER \
+    && usermod -g $GID -a -G sudo $USER \
+    && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
+    && chown -R $USER /databricks/python3 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -56,4 +60,5 @@ RUN mkdir -p /home/${USER}/${PROJECT_SLUG} \
 
 ENV PATH="/home/${USER}/.cargo/bin:/databricks/python3/bin:${PATH}"
 
-RUN rustup component add rustfmt clippy
+RUN rustup component add rustfmt clippy \
+    && jupyter serverextension enable jupytext

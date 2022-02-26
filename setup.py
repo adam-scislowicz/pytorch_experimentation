@@ -142,7 +142,9 @@ setuptools.setup(
     cmdclass={"build_ext": CMakeBuild, "clean": CmdClean},
     rust_extensions=[
         RustExtension(
-            "pytorch_experimentation.rust_proj.rustmoda", path="src/rust/Cargo.toml", binding=Binding.PyO3
+            "pytorch_experimentation.rust_proj.rustmoda",
+            path="src/rust/Cargo.toml",
+            binding=Binding.PyO3,
         )
     ],
     python_requires=">=3.6, <4",
