@@ -17,4 +17,6 @@ setuptools
 setuptools-rust
 torch==1.10.2+cpu
 torchaudio==0.10.2+cpu
+torchsummary
 torchvision==0.11.3+cpu
+torchviz
